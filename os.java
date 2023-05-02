@@ -119,7 +119,7 @@ class process {
 	public void running() {// 프로세스가 cpu를 차지하고 있는 상황
 		if (save != 0) // 작업양이 남아 있다면 작업량을 줄이고
 			save--;
-		if (count != 2) {//아직 응답이 나오지 않았다면 응답시간도 증가
+		if (count != 2) {// 아직 응답이 나오지 않았다면 응답시간도 증가
 			response++;
 			count++;
 		}
@@ -127,40 +127,52 @@ class process {
 
 }
 
-class scheduling {//각종 스케줄링 저장 클래스
-	process[] pro;//프로세스 정보 저장
+class scheduling {// 각종 스케줄링 저장 클래스
+	process[] pro;// 프로세스 정보 저장
 
-	int[] time = new int[10000];//간트차트
+	int timeq;
+	int[] time = new int[10000];// 간트차트
 
-	public scheduling(process[] pro) {//생성자
+	public scheduling(process[] pro, int timeq) {// 생성자
 		super();
 		this.pro = pro;
+		this.timeq = timeq;
 	}
 
-	public void reset() {//프로세스들의 상태를 초기 상태로 리셋하는 함수
+	public void reset() {// 프로세스들의 상태를 초기 상태로 리셋하는 함수
 		for (int i = 0; i < pro.length; i++) {
 			pro[i].reset();
 		}
 	}
 
-	public void print() {//스케줄링 간트차트 및 각 정보들 출력
-		double AWT = 0;//평균 대기 시간
-		double ART = 0;//평균 응답 시간
-		double ATT = 0;//평균 반환 시간
-		int[] arr = new int[pro.length];//전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
-		Arrays.fill(arr, 0);//배열 초기화
-		for (int i = 0; i < 10000; i++) {//간트차트 출력
+	public void print() {// 스케줄링 간트차트 및 각 정보들 출력
+		double AWT = 0;// 평균 대기 시간
+		double ART = 0;// 평균 응답 시간
+		double ATT = 0;// 평균 반환 시간
+		int[] arr = new int[pro.length];// 전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
+		Arrays.fill(arr, 0);// 배열 초기화
+		for (int i = 0; i < pro.length - 1; i++) {
+			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
+				if (pro[j].ID > pro[j + 1].ID) {
+					tmp = pro[j];
+					pro[j] = pro[j + 1];
+					pro[j + 1] = tmp;
+				}
+			}
+		}
+		System.out.print("| ");
+		for (int i = 0; i < 10000; i++) {// 간트차트 출력
 			if (time[i] == 0)
 				break;
 			System.out.print(time[i]);
 			arr[time[i] - 1]++;
+			if (time[i] != time[i + 1]) {
+				System.out.print(" | ");
+
+			}
 		}
 		System.out.println();
-		for (int i = 0; i < pro.length; i++) {
-			//System.out.println(arr[i]);
-		}
-
-		for (int i = 0; i < pro.length; i++) {//각 프로세스의 대기시간 응답시간 반환시간
+		for (int i = 0; i < pro.length; i++) {// 각 프로세스의 대기시간 응답시간 반환시간
 			System.out.println("프로세스" + pro[i].ID + " 대기시간:" + pro[i].getWaiting());
 			System.out.println("프로세스" + pro[i].ID + " 응답시간:" + pro[i].getResponse());
 			System.out.println("프로세스" + pro[i].ID + " 반환시간:" + (pro[i].getWaiting() + pro[i].getService()));
@@ -170,22 +182,31 @@ class scheduling {//각종 스케줄링 저장 클래스
 			ART += pro[i].getResponse();
 			ATT += pro[i].getWaiting() + pro[i].getService();
 		}
-		
+
 		System.out.println();
-		System.out.println("평균대기시간: " + AWT / pro.length);//평균 대기, 평균 응답, 평균 반환 출력
+		System.out.println("평균대기시간: " + AWT / pro.length);// 평균 대기, 평균 응답, 평균 반환 출력
 		System.out.println("평균응답시간: " + ART / pro.length);
 		System.out.println("평균반환시간: " + ATT / pro.length);
 
 	}
 
-	public void Timesliceprint() {//타임슬라이스를 사용하는 스케줄링을 출력
+	public void Timesliceprint() {// 타임슬라이스를 사용하는 스케줄링을 출력
 		double AWT = 0;
 		double ART = 0;
 		double ATT = 0;
 		int[] arr = new int[pro.length];
 		Arrays.fill(arr, 0);
 		int count = 0;
-
+		for (int i = 0; i < pro.length - 1; i++) {
+			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
+				if (pro[j].ID > pro[j + 1].ID) {
+					tmp = pro[j];
+					pro[j] = pro[j + 1];
+					pro[j + 1] = tmp;
+				}
+			}
+		}
+		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {
 			if (time[i] == 0)
 				break;
@@ -193,21 +214,18 @@ class scheduling {//각종 스케줄링 저장 클래스
 			arr[time[i] - 1]++;
 			count++;
 			if (time[i] != time[i + 1]) {
-				System.out.print("|");
+				System.out.print(" | ");
 				count = 0;
 
 			}
 
-			if (count == 2) {
-				System.out.print("|");
+			if (count == timeq) {
+				System.out.print(" | ");
 				count = 0;
 			}
 
 		}
 		System.out.println();
-		for (int i = 0; i < pro.length; i++) {
-			//System.out.println(arr[i]);
-		}
 
 		for (int i = 0; i < pro.length; i++) {
 			System.out.println("프로세스" + pro[i].ID + " 대기시간:" + pro[i].getWaiting());
@@ -228,11 +246,11 @@ class scheduling {//각종 스케줄링 저장 클래스
 
 	process tmp;
 
-	public void FCFS() {//First Come First Served
-		reset();//프로세스 상태 리셋
-		Arrays.fill(time, 0);//간트차트 초기화
-		int current;
-		for (int i = 0; i < pro.length - 1; i++) {//도착시간이 빠른 순서대로 정렬
+	public void FCFS() {// First Come First Served
+		reset();// 프로세스 상태 리셋
+		Arrays.fill(time, 0);// 간트차트 초기화
+
+		for (int i = 0; i < pro.length - 1; i++) {// 도착시간이 빠른 순서대로 정렬
 			for (int j = 0; j < pro.length - i - 1; j++) {
 				if (pro[j].arrival > pro[j + 1].arrival) {
 					tmp = pro[j];
@@ -241,40 +259,53 @@ class scheduling {//각종 스케줄링 저장 클래스
 				}
 			}
 		}
-
-		current = 0;//현재 동작중인 프로세스 인덱스 번호
-		int time1 = 0;//현재 시간
+		int index = 0;// 인덱스
+		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
+		int time1 = 0;// 현재 시간
 		while (true) {
-			int done = 0;//작업이 끝난 프로세스의 수
+			int done = 0;
 			for (int i = 0; i < pro.length; i++) {
 				if (pro[i].save == 0) {
 					done++;
 				}
 			}
-			if (done == pro.length)//프로세스가 다 작업이 끝났다면
+			if (done == pro.length) {
 				break;
+			}
 
 			for (int i = 0; i < pro.length; i++) {
-				if (pro[i].getSave() == 0)//다 동작한 프로세스면 다음 프로세스 확인
+				if (pro[i].getSave() == 0) {
+
 					continue;
+				}
+				if (currentID == pro[i].ID) {
 
-				if (current == i) {//현재 cpu를 사용하는 프로세스라면
-					pro[i].running();//동작후
-					time[time1++] = i + 1;//간트차트에 저장
-
+					pro[i].running();
+					time[time1++] = pro[i].ID;
 				} else {
-					pro[i].plusWait();//아니라면 대기
+					if (pro[i].count < 2) {// 반응시간이 아직 나오지 않았다면 반응시간도 추가하는 함수 실행
+						pro[i].plusWait();
+
+					} else {
+						pro[i].justwait();
+
+					}
 				}
 			}
-			if (pro[current].save == 0) {//현재 하던 작업이 끝났다면 다음 작업으로
-				current++;
+
+			for (int i = 0; i < pro.length; i++) {
+				if (pro[i].save != 0 && pro[i].waiting >= 0) {// 현재 하던 작업이 끝났다면 다음 작업으로
+					currentID = pro[i].ID;
+					break;
+				}
 			}
+
 		}
 		System.out.println("FCFS");
 		print();
 	}
 
-	public void SJF() {//shortest job first
+	public void SJF() {// shortest job first
 		reset();
 		Arrays.fill(time, 0);
 		int time1 = 0;
@@ -302,7 +333,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 			if (done == pro.length) {
 				break;
 			}
-			
+
 			for (int i = 0; i < pro.length; i++) {
 				if (pro[i].getSave() == 0) {
 
@@ -313,7 +344,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 					pro[i].running();
 					time[time1++] = pro[i].ID;
 				} else {
-					if (pro[i].count < 2) {//반응시간이 아직 나오지 않았다면 반응시간도 추가하는 함수 실행
+					if (pro[i].count < 2) {// 반응시간이 아직 나오지 않았다면 반응시간도 추가하는 함수 실행
 						pro[i].plusWait();
 
 					} else {
@@ -323,7 +354,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 				}
 			}
 
-			if (pro[index].save == 0) {//현재 프로세스가 끝나면 다음에 할 작업을 찾는다.
+			if (pro[index].save == 0) {// 현재 프로세스가 끝나면 다음에 할 작업을 찾는다.
 				if (index < pro.length) {
 					if (index + 1 >= pro.length) {
 						break;
@@ -332,7 +363,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 					process tmp = pro[++index];
 					for (int i = index; i < pro.length; i++) {
 
-						if (tmp.service > pro[i].service && time1 >= pro[i].arrival) {//작업량이 작고 현재 시간에 큐에 도착해 있다면 변경
+						if (tmp.service > pro[i].service && time1 >= pro[i].arrival) {// 작업량이 작고 현재 시간에 큐에 도착해 있다면 변경
 							memmory = i;
 							tmp = pro[i];
 						}
@@ -350,7 +381,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 		print();
 	}
 
-	public void priority1() {//비선점 우선순위
+	public void priority1() {// 비선점 우선순위
 		reset();
 		Arrays.fill(time, 0);
 		int time1 = 0;
@@ -403,11 +434,11 @@ class scheduling {//각종 스케줄링 저장 클래스
 					if (index + 1 >= pro.length) {
 						break;
 					}
-					
+
 					int memmory = index + 1;
 					process tmp = pro[++index];
 					for (int i = index; i < pro.length; i++) {
-						if (tmp.priority > pro[i].priority && time1 >= pro[i].arrival) {//우선순위가 먼저고 도착해있다면 다음 작업으로 선택
+						if (tmp.priority > pro[i].priority && time1 >= pro[i].arrival) {// 우선순위가 먼저고 도착해있다면 다음 작업으로 선택
 							memmory = i;
 							tmp = pro[i];
 						}
@@ -426,7 +457,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 		print();
 	}
 
-	public void priority2() {//선점형 우선순위
+	public void priority2() {// 선점형 우선순위
 		reset();
 		Arrays.fill(time, 0);
 		int time1 = 0;
@@ -443,7 +474,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
-		process tmp = pro[index];//현재작업중인 프로세스
+		process tmp = pro[index];// 현재작업중인 프로세스
 		while (true) {
 			int done = 0;
 			for (int i = 0; i < pro.length; i++) {
@@ -463,7 +494,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 					pro[i].running();
 					time[time1++] = pro[i].ID;
 					tmp = pro[i];
-					if (tmp.save == 0)//작업이 끝났다면 우선순위를 매우 크게 바꿔서 프로세스 선택시 영향을 받지 않게 한다.
+					if (tmp.save == 0)// 작업이 끝났다면 우선순위를 매우 크게 바꿔서 프로세스 선택시 영향을 받지 않게 한다.
 						tmp.priority = 10000;
 				} else {
 					if (pro[i].count < 2) {
@@ -487,10 +518,12 @@ class scheduling {//각종 스케줄링 저장 클래스
 				break;
 			}
 
-			for (int i = 0; i < pro.length; i++) {//매 작업 1씩 할 때마다 하고 있는 작업보다 더 우선순위가 먼저인 작업이 있는지 확인
+			for (int i = 0; i < pro.length; i++) {// 매 작업 1씩 할 때마다 하고 있는 작업보다 더 우선순위가 먼저인 작업이 있는지 확인
 				if (pro[i].priority == 10000)
 					continue;
-				if (pro[i].save > 0 && pro[i].waiting >= 0 && tmp.priority > pro[i].priority) {//작업이 끝나지 않고 프로세스가 도착하고 우선순위가 방금 했던 작업보다 우선이라면 해당 프로세스로 바꿔준다.
+				if (pro[i].save > 0 && pro[i].waiting >= 0 && tmp.priority > pro[i].priority) {// 작업이 끝나지 않고 프로세스가 도착하고
+																								// 우선순위가 방금 했던 작업보다
+																								// 우선이라면 해당 프로세스로 바꿔준다.
 					tmp = pro[i];
 					index = i;
 					currentID = tmp.ID;
@@ -503,7 +536,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 		print();
 	}
 
-	public void RoundRobin() {//라운드로빈
+	public void RoundRobin() {// 라운드로빈
 
 		reset();
 		Arrays.fill(time, 0);
@@ -522,8 +555,9 @@ class scheduling {//각종 스케줄링 저장 클래스
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
-		int timeslice = 0;//한작업이 타임슬라이스를 2를 넘지 않도록 하기 위한 변수
+		int timeslice = 0;// 한작업이 타임슬라이스를 2를 넘지 않도록 하기 위한 변수
 
+		process tmp = pro[0];
 		while (true) {
 			int done = 0;
 			for (int i = 0; i < pro.length; i++) {
@@ -540,10 +574,13 @@ class scheduling {//각종 스케줄링 저장 클래스
 					continue;
 				}
 				if (currentID == pro[i].ID) {
-
+					tmp = pro[i];
+					pro[i].arrival = time1;
 					pro[i].running();
 					time[time1++] = pro[i].ID;
-					timeslice++;//작업 수행 후 1만큼 증가
+					pro[i].arrival = time1;
+					timeslice++;// 작업 수행 후 1만큼 증가
+
 				} else {
 					if (pro[i].count < 2) {
 						pro[i].plusWait();
@@ -555,7 +592,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 				}
 			}
 
-			if (pro[index].save == 0 || timeslice == 2) {//한 작업이 끝났거나,타임슬라이스를 2만큼 사용했다면 다음 작업을 찾는다.
+			if (pro[index].save == 0 || timeslice == timeq) {// 한 작업이 끝났거나,타임슬라이스를 2만큼 사용했다면 다음 작업을 찾는다.
 				done = 0;
 				timeslice = 0;
 				for (int i = 0; i < pro.length; i++) {
@@ -568,33 +605,22 @@ class scheduling {//각종 스케줄링 저장 클래스
 					break;
 				}
 				if (index < pro.length) {
-
-					int memmory;
-
-					while (true) {
-
-						memmory = ++index;
-						if (index >= pro.length) {
-							index = 0;
-							memmory = 0;
-						}
-						if (time1 >= pro[memmory].arrival && pro[memmory].waiting >= 0 && pro[memmory].save != 0) {//다음작업이 작업량이 남아있고 도착했다면 다음 작업으로 바꿔줌
-							break;
+					int min = tmp.arrival;
+					for (int i = 0; i < pro.length; i++) {
+						if (min > pro[i].arrival && time1 >= pro[i].arrival && pro[i].waiting >= 0
+								&& pro[i].save != 0) {
+							min = pro[i].arrival;
+							index = i;
 						}
 					}
-
 					currentID = pro[index].ID;
 				}
-
 			}
-
 		}
-
 		System.out.println("RoundRobin");
-
 		Timesliceprint();
 	}
-
+	
 	public void SRT() {
 
 		reset();
@@ -652,7 +678,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 				}
 			}
 
-			if (pro[index].save == 0 || timeslice == 2) {
+			if (pro[index].save == 0 || timeslice == timeq) {
 				done = 0;
 				timeslice = 0;
 				for (int i = 0; i < pro.length; i++) {
@@ -687,7 +713,16 @@ class scheduling {//각종 스케줄링 저장 클래스
 					for (int i = 0; i < pro.length; i++) {
 						if (pro[i].save == 0)
 							continue;
-						if (tmp.save > pro[i].save && time1 >= pro[i].arrival && pro[memmory].waiting >= 0) {//작업이 도착해 있고 남아 있는 작업량이 그 중 제일 짧다면 다음 작업으로 정한다.
+						if (tmp.save > pro[i].save && time1 >= pro[i].arrival && pro[memmory].waiting >= 0) {// 작업이 도착해
+																												// 있고 남아
+																												// 있는
+																												// 작업량이
+																												// 그 중
+																												// 제일
+																												// 짧다면
+																												// 다음
+																												// 작업으로
+																												// 정한다.
 							memmory = i;
 							tmp = pro[i];
 						}
@@ -773,7 +808,7 @@ class scheduling {//각종 스케줄링 저장 클래스
 						if (((double) tmp.waiting + (double) tmp.service)
 								/ (double) tmp.waiting > ((double) pro[i].waiting + (double) pro[i].service)
 										/ (double) pro[i].waiting
-								&& time1 >= pro[i].arrival) {//대기시간+CPU사용시간/CPU사용시간이 존재하는 작업중에 제일 작은거부터 시작한다.
+								&& time1 >= pro[i].arrival) {// 대기시간+CPU사용시간/CPU사용시간이 존재하는 작업중에 제일 작은거부터 시작한다.
 							memmory = i;
 							tmp = pro[i];
 						}
@@ -794,63 +829,47 @@ class scheduling {//각종 스케줄링 저장 클래스
 }
 
 public class os {
-
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-
 		BufferedReader reader = new BufferedReader(new FileReader("src/file.txt"));
-
 		String str;
 		int num = 0;
+		str = reader.readLine();
 		while ((str = reader.readLine()) != null) {
-
 			num++;
 		}
-
-		process[] pro = new process[num];
+		System.out.println(num);
+		process[] pro = new process[num - 1];
 		reader = new BufferedReader(new FileReader("src/file.txt"));
 		int i = 0;
-		while ((str = reader.readLine()) != null) {
+		str = reader.readLine();
+		for (int j = 0; j < num - 1; j++) {
 
+			str = reader.readLine();
 			String[] result = str.split(" ");
 			String id = result[0];
 			pro[i] = new process(id, Integer.parseInt(result[1]), Integer.parseInt(result[2]),
 					Integer.parseInt(result[3]), 0, 0, 0);
 			i++;
 		}
+		str = reader.readLine();
+		System.out.println(str);
+		int timeslice = Integer.parseInt(str);
 		reader.close();
-
 		System.out.println();
-		/*
-		 * for(i=0;i<pro.length;i++) { System.out.print(pro[i].getID()+" ");
-		 * System.out.print(pro[i].getArrival()+" ");
-		 * System.out.print(pro[i].getService()+" ");
-		 * System.out.print(pro[i].getPriority()+" ");
-		 * System.out.print(pro[i].getWaiting()+" ");
-		 * System.out.print(pro[i].getSave()+" ");
-		 * System.out.print(pro[i].getResponse()+" "); System.out.println();
-		 * 
-		 * }
-		 */
-		scheduling sche = new scheduling(pro);
+		scheduling sche = new scheduling(pro, timeslice);
 		sche.FCFS();
 		System.out.println("");
-
 		sche.SJF();
 		System.out.println("");
-
 		sche.priority1();
 		System.out.println("");
-
 		sche.priority2();
 		System.out.println("");
-
 		sche.RoundRobin();
 		System.out.println("");
-
 		sche.SRT();
 		System.out.println("");
-
 		sche.HRN();
 	}
 
