@@ -149,8 +149,8 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double AWT = 0;// 평균 대기 시간
 		double ART = 0;// 평균 응답 시간
 		double ATT = 0;// 평균 반환 시간
-		int[] arr = new int[pro.length];// 전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
-		Arrays.fill(arr, 0);// 배열 초기화
+		// 전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
+		
 		for (int i = 0; i < pro.length - 1; i++) {
 			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
 				if (pro[j].ID > pro[j + 1].ID) {
@@ -162,10 +162,10 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		}
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {// 간트차트 출력
-			if (time[i] == 0)
+			if (time[i] == -1)
 				break;
 			System.out.print(time[i]);
-			arr[time[i] - 1]++;
+			
 			if (time[i] != time[i + 1]) {
 				System.out.print(" | ");
 
@@ -194,8 +194,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double AWT = 0;
 		double ART = 0;
 		double ATT = 0;
-		int[] arr = new int[pro.length];
-		Arrays.fill(arr, 0);
+		
 		int count = 0;
 		for (int i = 0; i < pro.length - 1; i++) {
 			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
@@ -208,10 +207,10 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		}
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {
-			if (time[i] == 0)
+			if (time[i] == -1)
 				break;
 			System.out.print(time[i]);
-			arr[time[i] - 1]++;
+			
 			count++;
 			if (time[i] != time[i + 1]) {
 				System.out.print(" | ");
@@ -248,7 +247,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 	public void FCFS() {// First Come First Served
 		reset();// 프로세스 상태 리셋
-		Arrays.fill(time, 0);// 간트차트 초기화
+		Arrays.fill(time, -1);// 간트차트 초기화
 
 		for (int i = 0; i < pro.length - 1; i++) {// 도착시간이 빠른 순서대로 정렬
 			for (int j = 0; j < pro.length - i - 1; j++) {
@@ -307,7 +306,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 	public void SJF() {// shortest job first
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
 		for (int i = 0; i < pro.length - 1; i++) {
@@ -383,7 +382,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 	public void priority1() {// 비선점 우선순위
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
 		for (int i = 0; i < pro.length - 1; i++) {
@@ -459,7 +458,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 	public void priority2() {// 선점형 우선순위
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
 		for (int i = 0; i < pro.length - 1; i++) {
@@ -539,7 +538,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 	public void RoundRobin() {// 라운드로빈
 
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 
 		int time1 = 0;
 		int index;
@@ -624,7 +623,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 	public void SRT() {
 
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 
 		int time1 = 0;
 		int index;
@@ -743,7 +742,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 	public void HRN() {
 		reset();
-		Arrays.fill(time, 0);
+		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
 		for (int i = 0; i < pro.length - 1; i++) {
@@ -844,7 +843,6 @@ public class os {
 		int i = 0;
 		str = reader.readLine();
 		for (int j = 0; j < num - 1; j++) {
-
 			str = reader.readLine();
 			String[] result = str.split(" ");
 			String id = result[0];
