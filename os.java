@@ -837,7 +837,7 @@ public class os {
 		while ((str = reader.readLine()) != null) {
 			num++;
 		}
-		System.out.println(num);
+		
 		process[] pro = new process[num - 1];
 		reader = new BufferedReader(new FileReader("src/file.txt"));
 		int i = 0;
@@ -851,10 +851,10 @@ public class os {
 			i++;
 		}
 		str = reader.readLine();
-		System.out.println(str);
+		
 		int timeslice = Integer.parseInt(str);
 		reader.close();
-		System.out.println();
+		
 		scheduling sche = new scheduling(pro, timeslice);
 		sche.FCFS();
 		System.out.println("");
