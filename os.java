@@ -451,7 +451,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 			}
 
 		}
-		System.out.println("priority1");
+		System.out.println("비선점형 우선순위 스케줄링");
 
 		print();
 	}
@@ -530,7 +530,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 			}
 		}
-		System.out.println("priority2");
+		System.out.println("선점형 우선순위 스케줄링");
 
 		print();
 	}
