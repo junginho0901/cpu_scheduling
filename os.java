@@ -11,7 +11,7 @@ class process {
 	int service;// 실행시간
 	int priority;// 우선순위
 	int waiting;// 대기시간
-	int save;// 동작한 시간
+	int save;// 남은작업시간
 	int response;// 응답시간=실행후로부터+2
 	int count = 0;// 응답시간 시점을 확인하기 위한 변수
 
@@ -150,16 +150,8 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double ART = 0;// 평균 응답 시간
 		double ATT = 0;// 평균 반환 시간
 		// 전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
+		Arrays.sort(pro, (a, b) -> a.ID - b.ID);
 		
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
-				if (pro[j].ID > pro[j + 1].ID) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {// 간트차트 출력
 			if (time[i] == -1)
@@ -196,15 +188,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double ATT = 0;
 		
 		int count = 0;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {// id 순서대로 정렬
-				if (pro[j].ID > pro[j + 1].ID) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.ID - b.ID);
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {
 			if (time[i] == -1)
@@ -249,15 +233,8 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		reset();// 프로세스 상태 리셋
 		Arrays.fill(time, -1);// 간트차트 초기화
 
-		for (int i = 0; i < pro.length - 1; i++) {// 도착시간이 빠른 순서대로 정렬
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
+		
 		int index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
 		int time1 = 0;// 현재 시간
@@ -309,15 +286,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
@@ -385,15 +354,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
@@ -461,15 +422,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
@@ -542,15 +495,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
@@ -627,15 +572,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 		int currentID = pro[index].ID;// 현재작업중인 프로세스 아이디
@@ -745,15 +682,7 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		Arrays.fill(time, -1);
 		int time1 = 0;
 		int index;
-		for (int i = 0; i < pro.length - 1; i++) {
-			for (int j = 0; j < pro.length - i - 1; j++) {
-				if (pro[j].arrival > pro[j + 1].arrival) {
-					tmp = pro[j];
-					pro[j] = pro[j + 1];
-					pro[j + 1] = tmp;
-				}
-			}
-		}
+		Arrays.sort(pro, (a, b) -> a.arrival - b.arrival);
 
 		index = 0;// 인덱스
 
