@@ -150,20 +150,26 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double ART = 0;// 평균 응답 시간
 		double ATT = 0;// 평균 반환 시간
 		// 전체 프로세스의 모든 작업량을 다 수행했는지 확인하는 배열
-		Arrays.sort(pro, (a, b) -> a.ID - b.ID);
-		
+		Arrays.sort(pro, (a, b) -> a.ID - b.ID);//배열 id 순서로 정렬 
+		System.out.println("");
+		int save=0;
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {// 간트차트 출력
 			if (time[i] == -1)
 				break;
-			System.out.print(time[i]);
 			
+				
+			System.out.print(time[i]);
+			save++;
 			if (time[i] != time[i + 1]) {
-				System.out.print(" | ");
+				System.out.print(" ("+"프로세스"+time[i]+" : "+save+"클록) "+" | ");
+				save=0;
 
 			}
 		}
+		
 		System.out.println();
+		System.out.println("");
 		for (int i = 0; i < pro.length; i++) {// 각 프로세스의 대기시간 응답시간 반환시간
 			System.out.println("프로세스" + pro[i].ID + " 대기시간:" + pro[i].getWaiting());
 			System.out.println("프로세스" + pro[i].ID + " 응답시간:" + pro[i].getResponse());
@@ -186,9 +192,10 @@ class scheduling {// 각종 스케줄링 저장 클래스
 		double AWT = 0;
 		double ART = 0;
 		double ATT = 0;
-		
+		int save=0;
 		int count = 0;
 		Arrays.sort(pro, (a, b) -> a.ID - b.ID);
+		System.out.println("");
 		System.out.print("| ");
 		for (int i = 0; i < 10000; i++) {
 			if (time[i] == -1)
@@ -196,19 +203,23 @@ class scheduling {// 각종 스케줄링 저장 클래스
 			System.out.print(time[i]);
 			
 			count++;
+			save++;
 			if (time[i] != time[i + 1]) {
-				System.out.print(" | ");
+				System.out.print(" ("+"프로세스"+time[i]+" : "+save+"클록) "+" | ");
+				save=0;
 				count = 0;
 
 			}
 
 			if (count == timeq) {
-				System.out.print(" | ");
+				System.out.print(" ("+"프로세스"+time[i]+" : "+save+"클록) "+" | ");
+				save=0;
 				count = 0;
 			}
 
 		}
 		System.out.println();
+		System.out.println("");
 
 		for (int i = 0; i < pro.length; i++) {
 			System.out.println("프로세스" + pro[i].ID + " 대기시간:" + pro[i].getWaiting());
